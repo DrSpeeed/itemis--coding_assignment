@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class ConferenceTrackManager {
 
-    ArrayList<String> rawSessionsList; // Contains the given data of sessions
-    ArrayList<Session> sessionList; // Contains the data converted into session objects
+    ArrayList<String> rawSessionsList; // Contains the given data of all talks
+    ArrayList<Talk> talkList; // Contains the data converted into talk objects
 
     /**
      * Constructor to initialise and run the process.
@@ -16,17 +16,17 @@ public class ConferenceTrackManager {
      */
     public ConferenceTrackManager() {
 
-        rawSessionsList = new ArrayList<>(); //raw list with raw information on sessions
-        sessionList = new ArrayList<>(); //list containing the actual session objects
+        rawSessionsList = new ArrayList<>(); //raw list with raw information on talks
+        talkList = new ArrayList<>(); //list containing the actual talk objects
 
         // importing the given raw data
         Services.importTracks(this, "tracks.txt");
 
-        // converting the raw data into session objects
+        // converting the raw data into talk objects
         Services.createSessionList(this, rawSessionsList);
 
-        // manipulating the sessions objects and printing the track lists to the console
-        Services.createTrackLists(this, sessionList);
+        // manipulating the talk objects and printing the session lists to the console
+        Services.createTrackLists(this, talkList);
 
     }
 }

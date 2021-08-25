@@ -1,18 +1,16 @@
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class Session_Test {
 
-    @Test
-    void getTitle() {
+    @org.junit.jupiter.api.Test
+    void getMorningSession() {
     }
 
-    @Test
-    void getLength() {
+    @org.junit.jupiter.api.Test
+    void getAfternoonSession() {
     }
 
-    @Test
-    void getStartingTime() {
+    @org.junit.jupiter.api.Test
+    void getTrackID() {
     }
 }

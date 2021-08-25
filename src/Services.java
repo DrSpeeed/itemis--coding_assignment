@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 /**
  * The service class contains all methods and services to manipulate the given raw data in order to print
- * the calculated track lists to the console.
+ * the calculated session lists to the console.
  *
  */
 
@@ -22,10 +22,10 @@ public class Services {
     }
 
     /**
-     * Import the actual session list provided in a file and add it to the rawSessionList.
+     * Import the actual talk list provided in a file and add it to the rawSessionList.
      *
      * @param conferenceTrackManager the class calling this method
-     * @param nameFile the file containing the actual track list
+     * @param nameFile the file containing the actual talk list
      */
     static void importTracks(ConferenceTrackManager conferenceTrackManager, String nameFile) {
 
@@ -54,11 +54,11 @@ public class Services {
     }
 
     /**
-     * Creates session objects out of the given rawSessionList and store these in an ArrayList.
-     * Critical is here that the session title must not contain any number.
+     * Creates talk objects out of the given rawSessionList and store these in an ArrayList.
+     * Critical is here that the talk title must not contain any number.
      *
      * @param conferenceTrackManager the class calling this method
-     * @param rawSessionList the list containing all given sessions
+     * @param rawSessionList the list containing all given talks
      */
     static void createSessionList(ConferenceTrackManager conferenceTrackManager, ArrayList<String> rawSessionList) {
 
@@ -68,72 +68,71 @@ public class Services {
             Matcher matcher = Pattern.compile("\\d+").matcher(rawSessionEdit);
             matcher.find();
 
-            // Find and extract the length of the session
+            // Find and extract the length of the talk
             try {
                 int duration = Integer.parseInt(matcher.group());
-                Session session = new Session(rawSessionEdit, duration);
-                conferenceTrackManager.sessionList.add(session);
+                Talk talk = new Talk(rawSessionEdit, duration);
+                conferenceTrackManager.talkList.add(talk);
 
             // Fallback if no length in minutes is provided;
-            // per given definition this is a lightning session with a length of 5 minutes
+            // per given definition this is a lightning talk with a length of 5 minutes
             } catch (IllegalStateException e){
-                Session session = new Session(rawSessionEdit, 5);
-                conferenceTrackManager.sessionList.add(session);
+                Talk talk = new Talk(rawSessionEdit, 5);
+                conferenceTrackManager.talkList.add(talk);
             }
         }
     }
 
     /**
-     * Main method to create the track lists.
+     * Main method to create the session lists.
      * Initialise some params for further usage.
      *
      * @param conferenceTrackManager the class calling this method
-     * @param sessionArrayList contains all session objects
+     * @param talkArrayList contains all session objects
      */
-    static void createTrackLists(ConferenceTrackManager conferenceTrackManager, ArrayList<Session> sessionArrayList){
+    static void createTrackLists(ConferenceTrackManager conferenceTrackManager, ArrayList<Talk> talkArrayList){
         int id = 1;
+        ArrayList<Session> sessionList = new ArrayList<>();
 
-        ArrayList<Track> trackList = new ArrayList<>();
+        // building the session lists
+        buildCompleteTrackLists(id, talkArrayList, sessionList);
 
-        // building the track lists
-        buildCompleteTrackLists(id, sessionArrayList, trackList);
-
-        // printing the generated track lists to the console
-        printTrackLists(trackList);
+        // printing the generated session lists to the console
+        printTrackLists(sessionList);
 
     }
 
     /**
-     * Prints the track lists to the console.
+     * Prints the session lists to the console.
      *
-     * @param trackList the generated track lists
+     * @param sessionList the generated session lists
      */
-    private static void printTrackLists(ArrayList<Track> trackList) {
+    private static void printTrackLists(ArrayList<Session> sessionList) {
         // iterating through the track lists
-        for (Track track : trackList) {
+        for (Session session : sessionList) {
 
-            System.out.println("Track " + track.getTrackID() + ":");
+            System.out.println("Track " + session.getTrackID() + ":");
 
             // printing the morning session
-            for (int m = 0; m < track.getMorningSession().size(); m++) {
+            for (int m = 0; m < session.getMorningSession().size(); m++) {
                 // converting the time format to US format
-                LocalTime toConvert = track.getMorningSession().get(m).getStartingTime();
+                LocalTime toConvert = session.getMorningSession().get(m).getStartingTime();
                 DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("KK:mma").withLocale(Locale.US);
                 String convertedToUS = toConvert.format(timeFormatter);
 
-                System.out.println(convertedToUS + " " + track.getMorningSession().get(m).getTitle());
+                System.out.println(convertedToUS + " " + session.getMorningSession().get(m).getTitle());
             }
 
             System.out.println("12:00PM Lunch");
 
             // printing the afternoon session
-            for (int j = 0; j < track.getAfternoonSession().size(); j++) {
+            for (int j = 0; j < session.getAfternoonSession().size(); j++) {
                 // converting the time format to US format
-                LocalTime toConvert = track.getAfternoonSession().get(j).getStartingTime();
+                LocalTime toConvert = session.getAfternoonSession().get(j).getStartingTime();
                 DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("KK:mma").withLocale(Locale.US);
                 String convertedToUS = toConvert.format(timeFormatter);
 
-                System.out.println(convertedToUS + " " + track.getAfternoonSession().get(j).getTitle());
+                System.out.println(convertedToUS + " " + session.getAfternoonSession().get(j).getTitle());
             }
 
             System.out.println("05:00PM Networking Event\n");
@@ -141,77 +140,77 @@ public class Services {
     }
 
     /**
-     * Iterates recursively through the sesssionArrayList with all session and builds the track lists.
+     * Iterates recursively through the sesssionArrayList with all session and builds the session lists.
      *
-     * @param id
-     * @param sessionArrayList with all sessions
-     * @param trackList containing both a morning and an afternoon session */
-    private static void buildCompleteTrackLists(int id, ArrayList<Session> sessionArrayList, ArrayList<Track> trackList) {
+     * @param id to label the track
+     * @param talkArrayList with all talks
+     * @param sessionList containing both a morning and an afternoon session */
+    private static void buildCompleteTrackLists(int id, ArrayList<Talk> talkArrayList, ArrayList<Session> sessionList) {
 
-        if (!sessionArrayList.isEmpty()){
-            Track track = getTrackList(sessionArrayList, id);
-            trackList.add(track);
+        if (!talkArrayList.isEmpty()){
+            Session session = getTrackList(talkArrayList, id);
+            sessionList.add(session);
             id++;
-            buildCompleteTrackLists(id, sessionArrayList, trackList);
+            buildCompleteTrackLists(id, talkArrayList, sessionList);
         }
     }
 
     /**
      * Generating both a morning and an afternoon session for a track and returns the later.
      *
-     * @param sessionArrayList with all sessions
+     * @param talkArrayList with all talks
      * @param id to label the track
      *
      * @return a track containing id, morning session, and afternoon session
      */
-    private static Track getTrackList(ArrayList<Session> sessionArrayList, int id) {
+    private static Session getTrackList(ArrayList<Talk> talkArrayList, int id) {
         LocalTime start;
         LocalTime lunchbreak = LocalTime.of(12, 0);
         LocalTime startNetworkingEvent = LocalTime.of(17, 0);
-        ArrayList<Session> morningList = new ArrayList<>();
-        ArrayList<Session> afternoonList = new ArrayList<>();
+        ArrayList<Talk> morningList = new ArrayList<>();
+        ArrayList<Talk> afternoonList = new ArrayList<>();
         Boolean morning = true;
 
         // generating the morning part
         if (morning){
             start = LocalTime.of(9, 0);
-            morningList = buildSingleTrack(sessionArrayList, start, lunchbreak);
+            morningList = buildSingleTrack(talkArrayList, start, lunchbreak);
         }
         morning = false;
 
         // generating the afternoon part
         if (!morning){
             start = LocalTime.of(13, 0);
-            afternoonList = buildSingleTrack(sessionArrayList, start, startNetworkingEvent);
+            afternoonList = buildSingleTrack(talkArrayList, start, startNetworkingEvent);
         }
         morning = true;
 
-        Track track = new Track(id, morningList, afternoonList);
+        Session session = new Session(id, morningList, afternoonList);
 
-        return track;
+        return session;
     }
 
     /**
      * Creates either morning or afternoon part of a track.
      *
-     * @param sessionArrayList with all sessions
-     * @param start starting time, either 9am (morning) or 1pm (afternoon)
-     * @param endOfTrackPart ending time, either 12pm (morning) or 5pm (afternoon)
+     * @param talkArrayList with all talks
+     * @param start starting time of a session, either 9am (morning) or 1pm (afternoon)
+     * @param endOfTrackPart ending time of a session, either 12pm (morning) or 5pm (afternoon)
      *
-     * @return either the morning or the afternoon part of a track
+     * @return either the morning or the afternoon session of a track
      */
-    private static ArrayList<Session> buildSingleTrack(ArrayList<Session> sessionArrayList, LocalTime start, LocalTime endOfTrackPart) {
-        Iterator<Session> iterateSession = sessionArrayList.iterator();
-        ArrayList<Session> sessionList = new ArrayList<>();
+    private static ArrayList<Talk> buildSingleTrack(ArrayList<Talk> talkArrayList, LocalTime start, LocalTime endOfTrackPart) {
+        Iterator<Talk> iterateSession = talkArrayList.iterator();
+        ArrayList<Talk> talkList = new ArrayList<>();
 
         while (iterateSession.hasNext()) {
-            Session session = iterateSession.next();
-            if (start.plusMinutes(session.getLength()).compareTo(endOfTrackPart) < 0) {
-                sessionList.add(new Session(start, session.getTitle(), session.getLength()));
-                start = start.plusMinutes(session.getLength());
+            Talk talk = iterateSession.next();
+            if (start.plusMinutes(talk.getLength()).compareTo(endOfTrackPart) < 0) {
+                talkList.add(new Talk(start, talk.getTitle(), talk.getLength()));
+                start = start.plusMinutes(talk.getLength());
                 iterateSession.remove();
             }
         }
-        return sessionList;
+        return talkList;
     }
 }

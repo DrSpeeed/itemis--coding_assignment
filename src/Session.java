@@ -1,66 +1,54 @@
-import java.time.LocalTime;
+import java.util.ArrayList;
 
 /**
- * The session class creates an individual session.
- * A session has a title and a length (duration of the session).
- * Additionally, a session can also have  a start time.
+ * The Session class creates a session.
+ * A session has an individual id, a morning session, and an afternoon session.
  */
 
 public class Session {
 
-    LocalTime start; // Start of the session
-    String title; // Title of the session
-    int length; // Length of the session
+    ArrayList<Talk> morningTalk; // Contains the talks in the morning
+    ArrayList<Talk> afternoonTalk; // Contains the talks in the afternoon
+    int trackID; // id of the track
 
     /**
-     * Constructor for a session object.
+     * Constructor for the session object.
      *
-     * @param title the title of the session
-     * @param length the length of the session
+     * @param id of the session
+     * @param morningTalk contains the talks in the morning
+     * @param afternoonTalk contains the talks in the afternoon
      */
-    public Session(String title, int length) {
-        this.title = title;
-        this.length = length;
+    public Session(int id, ArrayList<Talk> morningTalk, ArrayList<Talk> afternoonTalk){
+        this.trackID = id;
+        this.morningTalk = morningTalk;
+        this.afternoonTalk = afternoonTalk;
+
     }
 
     /**
-     * Constructor for a session object.
+     * Gets the morning talks from a session.
      *
-     * @param start the starting time of the session
-     * @param title the title of the session
-     * @param length the length of the session
+     * @return the morning talk session
      */
-    public Session(LocalTime start, String title, int length){
-        this.start = start;
-        this.title = title;
-        this.length = length;
+    public ArrayList<Talk> getMorningSession() {
+        return morningTalk;
     }
 
     /**
-     * Gets the title of a session.
+     * Gets the afternoon talks from a session.
      *
-     * @return the title of a session
+     * @return the afternoon talk session
      */
-    public String getTitle() {
-        return title;
+    public ArrayList<Talk> getAfternoonSession() {
+        return afternoonTalk;
     }
 
     /**
-     * Gets the length of a session.
+     * Gets the id of the session.
      *
-     * @return the length of a session
+     * @return the id
      */
-    public int getLength() {
-        return length;
+    public int getTrackID() {
+        return trackID;
     }
-
-    /**
-     * Gets the starting time of a session.
-     *
-     * @return the starting time of a session
-     */
-    public LocalTime getStartingTime(){
-        return start;
-    }
-
 }
