@@ -20,7 +20,7 @@ public class ConferenceTrackManager {
         talkList = new ArrayList<>(); //list containing the actual talk objects
 
         // importing the given raw data
-        Services.importTracks(this, "tracks.txt");
+        Services.importTracks(this, "talks.txt");
 
         // converting the raw data into talk objects
         Services.createSessionList(this, rawSessionsList);

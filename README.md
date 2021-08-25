@@ -2,7 +2,7 @@
 
 This code addresses problem 2 of the coding assignment, the CONFERENCE TRACK MANAGEMENT.
 
-Java JDK 11.0.10 was used.
+Java JDK 11.0.10 was used. The file talks.txt contains the talks provided. 
 The application should run without any further building adjustments.
 
 ## Annotations on my assumptions
