@@ -62,7 +62,7 @@ public class Services {
      */
     static void createSessionList(ConferenceTrackManager conferenceTrackManager, ArrayList<String> rawSessionList) {
 
-        // looping throuhg the list containing the raw data
+        // looping through the list containing the raw data
         for (int i=0; i < rawSessionList.size(); i++){
             String rawSessionEdit = rawSessionList.get(i);
             Matcher matcher = Pattern.compile("\\d+").matcher(rawSessionEdit);
